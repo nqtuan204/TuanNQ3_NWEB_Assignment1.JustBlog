@@ -1,0 +1,44 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model PostDetailsViewModel
+
+<input type="number" value="@Model.Id" hidden id="postId" />
+<div class="container p-4">
+    <div>
+        <h1 class="text-primary">
+            @Html.PostLink(Model.Title, Model.PostedOn.Year, Model.PostedOn.Month, Model.UrlSlug)
+        </h1>
+        <div>
+            @Html.CategoryLink(Model.Category.Name, Model.Category.UrlSlug)
+        </div>
+
+        <div>
+            @Html.Partial("_PopularTagsPartial", Model.Tags)
+        </div>
+
+        <p>
+            <i>Posted @Model.PostedOn.FriendlyFormat() with rate @Model.Rate by @Model.ViewCount view(s)</i>
+        </p>
+        <p>@Html.Raw(Model.ShortDescription)</p>
+        <hr>
+        <div>@Html.Raw(Model.PostContent)</div>
+        <hr>
+    </div>
+
+    @if (Model.Comments.Count > 0)
+    {
+        <h3 class="mb-3">Comments</h3>
+        <div id="comments-box"></div>
+    }
+    else
+    {
+        <h1>There are no comments to display</h1>
+    }
+    <div class="row">
+        <a type="button" class="btn btn-warning" href="/Admin/Post/Edit/@Model.Id" style="width: 75px;">Edit</a>
+    </div>
+
+</div>

@@ -1,0 +1,132 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model DataTableViewModel
+<div class="d-flex justify-content-between">
+    <a type="button" class="btn btn-success mb-3" href="/Admin/@(Model.Controller)/Create">Create @Model.Controller</a>
+    <div class="d-flex align-items-center">
+        <label style="width:150px;">Page size</label>
+        <select class="form-control h-75" onchange="getDataTable('@Model.Controller','@Model.Action',1,this.value)">
+            @for (int pageSize = 1; pageSize <= 10; pageSize++)
+            {
+                <option value="@pageSize" selected="@(Model.PageSize==pageSize)">@pageSize</option>
+            }
+        </select>
+    </div>
+</div>
+
+<table class="table border">
+    <thead>
+        <tr>
+            @foreach (var column in Model.Columns)
+            {
+                <th>@column</th>
+            }
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Data)
+        {
+            var itemId = item["Id"];
+            <tr id="record-@itemId">
+                @foreach (var column in Model.Columns)
+                {
+                    <td>@Html.Raw(item[column])</td>
+                }
+                <td>
+                    @if (Model.Controller == "Post")
+                    {
+                        <button type="button" class="btn btn-secondary" onclick="changePublish('@itemId', '@Model.Page', '@Model.PageSize')">@(item["Published"] == "Published" ? "Unpublish" : "Publish")</button>
+                    }
+                    <a type="button" class="btn btn-primary" href="/Admin/@Model.Controller/Details/@itemId">Details</a>
+                    <a type="button" class="btn btn-warning" href="/Admin/@Model.Controller/Edit/@itemId">Edit</a>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirm-delete-modal-@itemId">Delete</button>
+
+                    <!-- The Modal -->
+                    <div class="modal" id="confirm-delete-modal-@itemId">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Delete record</h4>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+
+                                <!-- Modal body -->
+                                <div class="modal-body">
+                                    Confirm delete?
+                                </div>
+
+                                <!-- Modal footer -->
+                                <div class="modal-footer d-flex">
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="deleteRecord('@itemId','@Model.Controller', '@Model.Action', '@Model.Page', '@Model.PageSize')">Yes</button>
+                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">No</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (Model.LastPage > 1)
+{
+    <nav aria-label="..." class="d-flex justify-content-between align-items-center">
+        <ul class="pagination">
+            @if (Model.Page == 1)
+            {
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                </li>
+                <li class="page-item active">
+                    <a class="page-link" href="#" onclick="getDataTable('@Model.Controller','@Model.Action',1,'@(Model.PageSize)')">1</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true" onclick="getDataTable('@Model.Controller','@Model.Action','@(Model.Page-1)','@(Model.PageSize)')">Previous</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#" onclick="getDataTable('@Model.Controller','@Model.Action',1,'@(Model.PageSize)')">1</a>
+                </li>
+            }
+            @for (int page = 2; page < Model.LastPage; page++)
+            {
+                <li class="page-item @((page==Model.Page)?"active":"")" aria-current="page">
+                    <a class="page-link" href="#" onclick="getDataTable('@Model.Controller','@Model.Action','@(page)','@(Model.PageSize)')">@(page)</a>
+                </li>
+            }
+
+            @if (Model.Page == Model.LastPage)
+            {
+                <li class="page-item active">
+                    <a class="page-link" href="#" onclick="getDataTable('@Model.Controller','@Model.Action','@Model.LastPage','@(Model.PageSize)')">@Model.LastPage</a>
+                </li>
+
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item">
+                    <a class="page-link" href="#" onclick="getDataTable('@Model.Controller','@Model.Action','@Model.LastPage','@(Model.PageSize)')">@Model.LastPage</a>
+                </li>
+
+                <li class="page-item">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true" onclick="getDataTable('@Model.Controller','@Model.Action','@(Model.Page+1)','@(Model.PageSize)')">Next</a>
+                </li>
+            }
+        </ul>
+        <b>Display from @((Model.Page - 1) * Model.PageSize + 1) to @(Model.Page * Model.PageSize < Model.Total ? Model.Page * Model.PageSize : Model.Total) of @Model.Total</b>
+    </nav>
+}

@@ -1,0 +1,68 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model EditCategoryViewModel
+
+<form class="row-cols-12" style="padding: 24px;" action="/Admin/Category/Edit" method="post" role="form">
+    <input type="text" asp-for="Id" tabindex="1" class="form-control" value="@Model.Id" hidden />
+    <h2 class="pb-2">Update category</h2>
+    <div class="mb-3">
+        <label for="Name">
+            <b>Name</b>
+        </label>
+        <input type="text" asp-for="Name" tabindex="2" class="form-control" placeholder="Name" value="@(Model!=null?Model.Name:null)" oninput="document.getElementById('update-success-message').innerHTML=''" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label for="UrlSlug">
+            <b>Slug</b>
+        </label>
+        <input type="text" asp-for="UrlSlug" tabindex="3" class="form-control" placeholder="Slug" value="@(Model!=null?Model.UrlSlug:null)" oninput="document.getElementById('update-success-message').innerHTML=''">
+        <span asp-validation-for="UrlSlug" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label for="Description">
+            <b>Description</b>
+        </label>
+        <textarea asp-for="Description" tabindex="4" class="form-control" placeholder="Description" value="@(Model!=null?Model.Description:null)" rows="10" oninput="document.getElementById('update-success-message').innerHTML=''"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Update</button>
+    @if (ViewBag.Message != null)
+    {
+
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#update-success-modal" id="show-modal-button" hidden></button>
+
+        <!-- The Modal -->
+        <div class="modal" id="update-success-modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Update Category</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="document.getElementById('update-success-modal').style.display='none'"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        @ViewBag.Message
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer d-flex">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="document.getElementById('update-success-modal').style.display='none'">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <script>
+            document.getElementById('update-success-modal').style.display = 'block';
+        </script>
+    }
+
+</form>

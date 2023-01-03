@@ -1,0 +1,57 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model PostDetailsViewModel
+<input type="number" value="@Model.Id" hidden id="postId" />
+
+<div>
+    <h1 class="text-primary">
+        @Html.PostLink(Model.Title, Model.PostedOn.Year, Model.PostedOn.Month, Model.UrlSlug)
+    </h1>
+    <div>
+        @Html.CategoryLink(Model.Category.Name, Model.Category.UrlSlug)
+    </div>
+
+    <div>
+        @Html.Partial("_PopularTagsPartial", Model.Tags)
+    </div>
+
+    <p>
+        <i>Posted @Model.PostedOn.FriendlyFormat() with rate @Model.Rate by @Model.ViewCount view(s)</i>
+    </p>
+    <p>@Html.Raw(Model.ShortDescription)</p>
+    <hr>
+    <div>@Html.Raw(Model.PostContent)</div>
+    <hr>
+</div>
+
+<h3 class="mb-3">Comments</h3>
+
+<div id="add-comment-box">
+    <div class="pb-2">
+        <input id="comment-header" type="text" placeholder="Header" class="form-control" />
+    </div>
+    <div class="pb-2">
+        <input id="comment-name" type="text" placeholder="Name" class="form-control" />
+    </div>
+
+    <div class="pb-2">
+        <input id="comment-email" type="email" placeholder="Email" class="form-control" />
+    </div>
+
+    <div class="pb-2">
+        <textarea id="comment-text" placeholder="Comment in here" cols="43" rows="10"></textarea>
+    </div>
+
+    <div>
+        <button id="submit-comment-btn" class="btn-submit">Submit</button>
+        <span class="text-danger" hidden id="submit-comment-result">Name, Email and comment text must not be empty</span>
+    </div>
+</div>
+
+<hr class="mb-3" />
+
+<div id="comments-box">
+</div>

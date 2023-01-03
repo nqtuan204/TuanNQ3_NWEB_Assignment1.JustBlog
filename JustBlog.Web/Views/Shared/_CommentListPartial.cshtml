@@ -1,0 +1,24 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model IList<CommentViewModel>
+@if (Model.Count == 0)
+{
+    <h3>There are no comments to display.</h3>
+}
+else
+{
+    foreach (var comment in Model)
+    {
+        <div class="border mb-2 p-2">
+            <h5>@comment.CommentHeader</h5>
+            <p class="m-0">@comment.Name (@comment.Email)</p>
+            <p class="m-0 mt-1 mb-1">@Html.Raw(comment.CommentText)</p>
+            <p class="m-0">
+                <i>@comment.CommentTime.FriendlyFormat()</i>
+            </p>
+        </div>
+    }
+}
